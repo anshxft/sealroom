@@ -1,0 +1,42 @@
+[
+  {
+    "id": "charge",
+    "diff": "def charge(balance, amount):\n-    if amount > balance:\n+    if amount >= balance + 1:\n         raise ValueError(\"insufficient funds\")\n     return balance - amount",
+    "bugs": {
+      "fractional_overdraft": "With non-integer amounts the new check lets a charge overdraw the balance (for example balance 10, amount 10.5).",
+      "negative_amount": "A negative amount is accepted and increases the balance instead of charging it."
+    }
+  },
+  {
+    "id": "page",
+    "diff": "def page(items, page, size):\n-    start = page * size\n+    start = (page - 1) * size\n     return items[start:start + size]",
+    "bugs": {
+      "callers_shift": "Existing callers pass zero-based page numbers, so every caller now gets the previous page (page 1 returns what page 0 used to).",
+      "page_zero_negative": "page=0 now gives a negative start index, so the slice silently returns items from the end of the list instead of failing."
+    }
+  },
+  {
+    "id": "token",
+    "diff": "import hmac\n\ndef check_token(given, expected):\n-    return hmac.compare_digest(given, expected)\n+    return given == expected or given == expected.strip()",
+    "bugs": {
+      "timing_attack": "Plain == comparison is not constant time, which reopens a timing side channel that compare_digest closed.",
+      "loosened_match": "Comparing against expected.strip() accepts a token that differs from the stored one, weakening the check."
+    }
+  },
+  {
+    "id": "retry",
+    "diff": "def fetch(url, retries=3):\n-    for attempt in range(retries):\n+    for attempt in range(retries + 1):\n         try:\n             return get(url, timeout=5)\n-        except TimeoutError:\n+        except Exception:\n             sleep(2 ** attempt)\n+    return None",
+    "bugs": {
+      "broad_except": "Catching every Exception retries errors that will never succeed (bad URL, auth failure, programming errors) and hides them.",
+      "silent_none": "After the last attempt the function returns None instead of raising, so callers get None where they expect a response."
+    }
+  },
+  {
+    "id": "discount",
+    "diff": "def apply_discount(price_cents, percent):\n-    return price_cents - price_cents * percent // 100\n+    return round(price_cents * (1 - percent / 100))",
+    "bugs": {
+      "percent_unbounded": "Nothing bounds percent, so a value over 100 produces a negative price (or under 0 raises the price).",
+      "rounding_change": "Switching from integer floor division to float arithmetic with round() changes results by a cent on many inputs (float error and round-half-to-even)."
+    }
+  }
+]
