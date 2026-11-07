@@ -102,7 +102,7 @@ The template also describes the four rooms (`group`, `rooms`, `links`), and [`se
 | Sealed | **9** | 1 of 5 |
 | Shared | 8 | 0 of 5 |
 
-The one problem only sealed review caught: an unbounded discount `percent`, found by the security reviewer alone. In the shared run that reviewer read two earlier answers about rounding and did not raise it. Sealed review also produced the only split verdict, which is exactly what the moderator escalates to a human. Shared review produced none.
+The one problem only sealed review caught: an unbounded discount `percent`, found by the security reviewer alone. In the shared run that reviewer first read reviewer A's answer about rounding, then wrote almost the same answer, same example included (`apply_discount(5, 50)` returns 2 instead of 3), and never raised the bound. Sealed review also produced the only split verdict, which is exactly what the moderator escalates to a human. Shared review produced none.
 
 This is one run on five changes: a direction, not proof. Neither condition caught the negative-amount problem in `charge` here, though reviewer B did catch it in the live Discord run.
 
