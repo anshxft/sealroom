@@ -1,0 +1,65 @@
+# SEALROOM rooms: the decide room and three blind rooms for agents that
+# sealroom.template.yaml already created. Switch Console 0.40.1 creates a
+# group template's agents but not its rooms, so the rooms come from here.
+version: 1
+params:
+  team:
+    type: string
+    label: Name prefix
+    description: The prefix you gave sealroom.template.yaml
+    default: sr
+    pattern: '[a-z][a-z0-9-]*'
+  bridge:
+    type: bridge
+    description: Messaging app for the rooms.
+    default:
+    - $first
+group:
+  name: '{team} sealroom'
+  description: Blind review with one human sign-off
+rooms:
+- name: '{team}-decide'
+  description: Ask for a review here. Verdicts are revealed here together.
+  bridge: '{bridge}'
+  agents:
+  - '{team}-moderator'
+  users:
+  - '{$creator}'
+  kickoff: "@{team}-moderator please run a blind review of this change:\n\ndef charge(balance, amount):\n-    if amount > balance:\n+    if amount >= balance + 1:\n         raise ValueError(\"insufficient funds\")\n     return balance - amount\n"
+- name: '{team}-blind-a'
+  description: Reviewer A works here alone with the moderator
+  bridge: '{bridge}'
+  channel_type: channel_private
+  agents:
+  - '{team}-moderator'
+  - '{team}-reviewer-a'
+  users:
+  - '{$creator}'
+- name: '{team}-blind-b'
+  description: Reviewer B works here alone with the moderator
+  bridge: '{bridge}'
+  channel_type: channel_private
+  agents:
+  - '{team}-moderator'
+  - '{team}-reviewer-b'
+  users:
+  - '{$creator}'
+- name: '{team}-blind-c'
+  description: Reviewer C works here alone with the moderator
+  bridge: '{bridge}'
+  channel_type: channel_private
+  agents:
+  - '{team}-moderator'
+  - '{team}-reviewer-c'
+  users:
+  - '{$creator}'
+links:
+- from: '{team}-decide'
+  to: '{team}-blind-a'
+  label: reviewer a
+- from: '{team}-decide'
+  to: '{team}-blind-b'
+  label: reviewer b
+- from: '{team}-decide'
+  to: '{team}-blind-c'
+  label: reviewer c

@@ -1,0 +1,159 @@
+# SEALROOM: blind review with one human sign-off.
+#
+# Each reviewer sits alone in its own room with the moderator, so no reviewer
+# can read another's verdict. The moderator collects all three, then reveals
+# them together in the decide room for the deployer to sign off.
+version: 1
+
+params:
+  team:
+    type: string
+    label: Name prefix
+    description: Prefix for every agent and room this creates
+    default: sr
+    pattern: "[a-z][a-z0-9-]*"
+  bridge:
+    type: bridge
+    description: Messaging app for the rooms.
+    default: [$first]
+  machine:
+    type: machine
+    description: The machine every agent runs on.
+    default: [$first]
+    input: advanced
+
+agents:
+  - name: "{team}-moderator"
+    description: Runs the blind review and reveals verdicts together
+    provider: claude
+    machine: "{machine}"
+    directory: "{$agents_dir}/{team}-moderator"
+    addressing: anyone
+    auto_mode: false
+    instructions: |
+      You moderate a blind review. You sit in four rooms: {team}-decide, where
+      people ask for a review, and {team}-blind-a, {team}-blind-b and
+      {team}-blind-c, each holding one reviewer.
+
+      When someone in {team}-decide asks for a review:
+      1. Post the change, word for word, in each blind room, addressed to that
+         room's reviewer: @{team}-reviewer-a in {team}-blind-a,
+         @{team}-reviewer-b in {team}-blind-b, @{team}-reviewer-c in
+         {team}-blind-c. Add nothing else.
+      2. Say in {team}-decide that the review is sealed and how many verdicts
+         you are waiting for. Do not state any verdict yet.
+      3. Wait until all three reviewers have answered. Never tell one reviewer
+         anything another reviewer said, not even that they have answered.
+      4. Post one reveal in {team}-decide: each reviewer's verdict, confidence
+         and reason, copied exactly.
+      5. Under the reveal, address the deployer:
+         - All three SHIP with confidence 4 or 5: ask for sign-off.
+         - Anything else: state the exact disagreement or the low confidence,
+           and ask the one question that would settle it.
+
+      You never decide yourself and never give your own opinion on the change.
+      If a reviewer has not answered, say which one and keep waiting. Never
+      invent a verdict.
+
+  - name: "{team}-reviewer-a"
+    description: Blind reviewer, looks for correctness bugs
+    provider: claude
+    machine: "{machine}"
+    directory: "{$agents_dir}/{team}-reviewer-a"
+    addressing: owner-agents
+    auto_mode: false
+    instructions: |
+      You are one of several independent reviewers. You work alone and cannot
+      see anyone else's review. Judge only the change put in front of you. Do
+      not look for other reviews, rooms or files outside your directory.
+
+      Your focus is correctness: logic errors, edge cases, broken behaviour.
+      Weigh anything else you notice too.
+
+      Reply in exactly this form and add nothing else:
+      VERDICT: SHIP or BLOCK
+      CONFIDENCE: 1 to 5
+      REASON: one or two sentences, naming the exact line that decided it
+
+  - name: "{team}-reviewer-b"
+    description: Blind reviewer, looks for security problems
+    provider: claude
+    machine: "{machine}"
+    directory: "{$agents_dir}/{team}-reviewer-b"
+    addressing: owner-agents
+    auto_mode: false
+    instructions: |
+      You are one of several independent reviewers. You work alone and cannot
+      see anyone else's review. Judge only the change put in front of you. Do
+      not look for other reviews, rooms or files outside your directory.
+
+      Your focus is security and money safety: abuse, bad input, data leaks,
+      anything that loses funds. Weigh anything else you notice too.
+
+      Reply in exactly this form and add nothing else:
+      VERDICT: SHIP or BLOCK
+      CONFIDENCE: 1 to 5
+      REASON: one or two sentences, naming the exact line that decided it
+
+  - name: "{team}-reviewer-c"
+    description: Blind reviewer, looks for release risk
+    provider: claude
+    machine: "{machine}"
+    directory: "{$agents_dir}/{team}-reviewer-c"
+    addressing: owner-agents
+    auto_mode: false
+    instructions: |
+      You are one of several independent reviewers. You work alone and cannot
+      see anyone else's review. Judge only the change put in front of you. Do
+      not look for other reviews, rooms or files outside your directory.
+
+      Your focus is release risk: missing tests, behaviour changes for existing
+      callers, whether it is safe to roll out. Weigh anything else you notice
+      too.
+
+      Reply in exactly this form and add nothing else:
+      VERDICT: SHIP or BLOCK
+      CONFIDENCE: 1 to 5
+      REASON: one or two sentences, naming the exact line that decided it
+
+group:
+  name: "{team} sealroom"
+  description: Blind review with one human sign-off
+
+rooms:
+  - name: "{team}-decide"
+    description: Ask for a review here. Verdicts are revealed here together.
+    bridge: "{bridge}"
+    agents: ["{team}-moderator"]
+    users: ["{$creator}"]
+    kickoff: |
+      @{team}-moderator please run a blind review of this change:
+
+      def charge(balance, amount):
+      -    if amount > balance:
+      +    if amount >= balance + 1:
+               raise ValueError("insufficient funds")
+           return balance - amount
+  - name: "{team}-blind-a"
+    description: Reviewer A works here alone with the moderator
+    bridge: "{bridge}"
+    channel_type: channel_private
+    agents: ["{team}-moderator", "{team}-reviewer-a"]
+    users: ["{$creator}"]
+  - name: "{team}-blind-b"
+    description: Reviewer B works here alone with the moderator
+    bridge: "{bridge}"
+    channel_type: channel_private
+    agents: ["{team}-moderator", "{team}-reviewer-b"]
+    users: ["{$creator}"]
+  - name: "{team}-blind-c"
+    description: Reviewer C works here alone with the moderator
+    bridge: "{bridge}"
+    channel_type: channel_private
+    agents: ["{team}-moderator", "{team}-reviewer-c"]
+    users: ["{$creator}"]
+
+links:
+  - { from: "{team}-decide", to: "{team}-blind-a", label: reviewer a }
+  - { from: "{team}-decide", to: "{team}-blind-b", label: reviewer b }
+  - { from: "{team}-decide", to: "{team}-blind-c", label: reviewer c }
