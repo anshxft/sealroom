@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8b93a7"/>
+    </marker>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1320"/><stop offset="1" stop-color="#161b2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="480" rx="18" fill="url(#bg)"/>
+
+  <text x="40" y="52" fill="#e8ebf3" font-size="24" font-weight="700">SEALROOM</text>
+  <text x="40" y="78" fill="#8b93a7" font-size="15">Three reviewers judge alone. One reveal. A human decides.</text>
+
+  <!-- decide room -->
+  <rect x="40" y="170" width="230" height="120" rx="14" fill="#1d2440" stroke="#5b7cfa" stroke-width="2"/>
+  <text x="62" y="202" fill="#9fb4ff" font-size="15" font-weight="700"># sr2-decide</text>
+  <text x="62" y="230" fill="#c9cfdd" font-size="14">you + moderator</text>
+  <text x="62" y="256" fill="#8b93a7" font-size="13">ask for a review,</text>
+  <text x="62" y="275" fill="#8b93a7" font-size="13">get one reveal</text>
+
+  <!-- blind rooms -->
+  <g font-size="14">
+    <rect x="400" y="110" width="250" height="70" rx="12" fill="#1a2a26" stroke="#36c08a" stroke-width="2"/>
+    <text x="420" y="138" fill="#7fe0b6" font-weight="700"># sr2-blind-a</text>
+    <text x="420" y="162" fill="#c9cfdd">reviewer-a · correctness</text>
+
+    <rect x="400" y="195" width="250" height="70" rx="12" fill="#1a2a26" stroke="#36c08a" stroke-width="2"/>
+    <text x="420" y="223" fill="#7fe0b6" font-weight="700"># sr2-blind-b</text>
+    <text x="420" y="247" fill="#c9cfdd">reviewer-b · security</text>
+
+    <rect x="400" y="280" width="250" height="70" rx="12" fill="#1a2a26" stroke="#36c08a" stroke-width="2"/>
+    <text x="420" y="308" fill="#7fe0b6" font-weight="700"># sr2-blind-c</text>
+    <text x="420" y="332" fill="#c9cfdd">reviewer-c · release risk</text>
+  </g>
+
+  <!-- walls between blind rooms -->
+  <g stroke="#e0566b" stroke-width="3" stroke-dasharray="6 5">
+    <line x1="410" y1="187.5" x2="640" y2="187.5"/>
+    <line x1="410" y1="272.5" x2="640" y2="272.5"/>
+  </g>
+  <text x="664" y="234" fill="#e0566b" font-size="13">no reviewer sees</text>
+  <text x="664" y="252" fill="#e0566b" font-size="13">another's verdict</text>
+
+  <!-- arrows out -->
+  <g stroke="#8b93a7" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <path d="M270 210 C 330 210, 340 145, 396 145"/>
+    <path d="M270 230 L396 230"/>
+    <path d="M270 250 C 330 250, 340 315, 396 315"/>
+  </g>
+
+  <!-- reveal -->
+  <rect x="40" y="385" width="610" height="60" rx="12" fill="#2a2216" stroke="#f0b44c" stroke-width="2"/>
+  <text x="62" y="411" fill="#ffd38a" font-size="15" font-weight="700">Reveal, only when all three are in</text>
+  <text x="62" y="432" fill="#c9cfdd" font-size="13">agree with high confidence: ask for sign-off · otherwise: the exact disagreement and one question</text>
+  <path d="M155 290 L155 381" stroke="#f0b44c" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- human -->
+  <rect x="740" y="385" width="180" height="60" rx="12" fill="#1d2440" stroke="#5b7cfa" stroke-width="2"/>
+  <text x="762" y="411" fill="#9fb4ff" font-size="15" font-weight="700">You decide</text>
+  <text x="762" y="432" fill="#c9cfdd" font-size="13">the moderator never does</text>
+  <path d="M650 415 L736 415" stroke="#8b93a7" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>

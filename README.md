@@ -10,15 +10,7 @@ When agents review in one shared chat, the second reviewer reads the first one's
 
 ## How it works
 
-```text
-#sr2-decide   (you + moderator)
-   | "@sr2-moderator please run a blind review of this change: ..."
-   v
-moderator --> #sr2-blind-a (moderator + reviewer-a) --+
-          --> #sr2-blind-b (moderator + reviewer-b) --+--> all three in
-          --> #sr2-blind-c (moderator + reviewer-c) --+    -> one reveal in #sr2-decide
-                                                           -> you decide
-```
+![SEALROOM: the decide room sends one change to three blind rooms, then reveals all verdicts together](docs/flow.svg)
 
 1. You ask the moderator for a review in the decide room.
 2. The moderator posts the change, word for word, into three blind rooms, one reviewer each.

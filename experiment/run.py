@@ -38,7 +38,9 @@ def claude(prompt, system):
         return "VERDICT: BLOCK\nCONFIDENCE: 4\nREASON: fake"
     # Prompt on stdin and system prompt in a file: a Windows .cmd shim cuts
     # command-line arguments at the first newline.
-    with tempfile.TemporaryDirectory() as empty, tempfile.TemporaryDirectory() as aside:
+    # A finished claude.exe can hold its folder for a moment on Windows.
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as empty, \
+            tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as aside:
         system_file = Path(aside) / "system.md"
         system_file.write_text(system, encoding="utf-8")
         out = subprocess.run(
@@ -52,20 +54,36 @@ def claude(prompt, system):
     return out.stdout.strip()
 
 
+def cached(path, make):
+    """Each answer is saved as it arrives, so a rerun only redoes what failed."""
+    if FAKE:
+        return make()
+    if not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(make(), encoding="utf-8")
+    return path.read_text(encoding="utf-8")
+
+
 def ask(diff, earlier):
     room = "".join(f"@sr-reviewer-{who.lower()}: {text}\n\n" for who, text in earlier)
     prefix = f"Earlier in this room:\n\n{room}" if room else ""
     return f"{prefix}review this change:\n{diff}"
 
 
+def review(mode, change, who, prompt, brief):
+    return cached(RESULTS / "raw" / mode / change["id"] / f"{who}.txt",
+                  lambda: claude(prompt, brief))
+
+
 def sealed(change, briefs):
-    return {who: claude(ask(change["diff"], []), brief) for who, brief in briefs.items()}
+    return {who: review("sealed", change, who, ask(change["diff"], []), brief)
+            for who, brief in briefs.items()}
 
 
 def shared(change, briefs):
     answers = []
     for who, brief in briefs.items():
-        answers.append((who, claude(ask(change["diff"], answers), brief)))
+        answers.append((who, review("shared", change, who, ask(change["diff"], answers), brief)))
     return dict(answers)
 
 
@@ -76,11 +94,12 @@ explicitly. A vague worry does not count. Reply with only a JSON object
 mapping each problem id to the list of reviewers (A, B, C) who found it."""
 
 
-def grade(change, reviews):
+def grade(mode, change, reviews):
     bugs = "\n".join(f"- {bid}: {text}" for bid, text in change["bugs"].items())
     body = "\n\n".join(f"Reviewer {who}:\n{text}" for who, text in reviews.items())
     prompt = f"Change:\n{change['diff']}\n\nKnown problems:\n{bugs}\n\nReviews:\n\n{body}"
-    raw = claude(prompt, GRADER + "\nKnown problems are given; grade only those.")
+    raw = cached(RESULTS / "grades" / f"{mode}-{change['id']}.txt",
+                 lambda: claude(prompt, GRADER + "\nKnown problems are given; grade only those."))
     found = json.loads(raw[raw.index("{"):raw.rindex("}") + 1])
     assert set(found) == set(change["bugs"]), (change["id"], found)
     return found
@@ -99,7 +118,7 @@ def main():
         runs = {(mode, c["id"]): pool.submit(fn, c, briefs)
                 for c in changes for mode, fn in (("sealed", sealed), ("shared", shared))}
         reviews = {key: f.result() for key, f in runs.items()}
-        graded = {key: pool.submit(grade, next(c for c in changes if c["id"] == key[1]), r)
+        graded = {key: pool.submit(grade, key[0], next(c for c in changes if c["id"] == key[1]), r)
                   for key, r in reviews.items()}
         grades = {key: f.result() for key, f in graded.items()}
 
