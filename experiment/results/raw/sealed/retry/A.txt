@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: `except Exception:` with the new `return None` swallows every error, including non-transient ones like bad URLs and programming bugs. It retries them and then returns `None`, so callers get a confusing `AttributeError` later instead of the real failure. The loop also sleeps `2 ** attempt` after the final failed attempt before returning, which adds a useless 8-second wait.

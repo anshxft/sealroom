@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 3
+REASON: The new line `start = (page - 1) * size` has no `page >= 1` guard. `page=0` silently returns `[]`, and `page=-1` gives a negative `start` that returns real items from the end of the list. Any existing 0-based caller also silently skips its first page of records. I couldn't see the callers, so I don't know whether that last case applies.

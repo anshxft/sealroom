@@ -93,6 +93,19 @@ Reviewer B's second finding is the kind of thing a shared room tends to lose: on
 
 The template also describes the four rooms (`group`, `rooms`, `links`), and [`sealroom.rooms.template.yaml`](sealroom.rooms.template.yaml) describes them on their own. On Switch Console 0.40.1 for Windows neither produced Discord channels for us: the group template created only the agents, and the rooms-only template created Switch rooms that never got Discord channels, most likely because the bot was missing Manage Channels at the time. Creating the channels by hand and inviting agents with `!invite-agent` uses the same rooms, agents and instructions, so the review behaves the same.
 
+## Shared vs sealed: a small test
+
+[`experiment/`](experiment/) runs the same three reviewers on five changes with ten known problems, once sealed (each alone) and once shared (each sees the earlier answers, as in a shared room). The protocol and scoring rule were committed before the run ([`PROTOCOL.md`](experiment/PROTOCOL.md)); raw answers are in [`experiment/results/`](experiment/results/).
+
+| Condition | Distinct problems found (of 10) | Split verdicts |
+| --- | --- | --- |
+| Sealed | **9** | 1 of 5 |
+| Shared | 8 | 0 of 5 |
+
+The one problem only sealed review caught: an unbounded discount `percent`, found by the security reviewer alone. In the shared run that reviewer read two earlier answers about rounding and did not raise it. Sealed review also produced the only split verdict, which is exactly what the moderator escalates to a human. Shared review produced none.
+
+This is one run on five changes: a direction, not proof. Neither condition caught the negative-amount problem in `charge` here, though reviewer B did catch it in the live Discord run.
+
 ## Limits
 
 - Blindness is a room boundary, not an OS sandbox. All four agents run as the same user on the same machine, and the moderator keeps verdicts apart because its instructions say so. You can audit every blind room afterwards.

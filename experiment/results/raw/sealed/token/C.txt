@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 5
+REASON: The line `return given == expected or given == expected.strip()` replaces the constant-time `hmac.compare_digest` with `==`, which leaks timing information on a secret-token comparison. It also loosens validation by accepting a token that equals the stripped expected value, and no tests cover either change.

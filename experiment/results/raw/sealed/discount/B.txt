@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: The added line `return round(price_cents * (1 - percent / 100))` moves money math to floats with banker's rounding, so a 1-cent item at 50% off now rounds 0.5 to 0 and is free. The old integer version charged 1 cent. The new line also loses exactness for large prices, and neither version validates `percent`.

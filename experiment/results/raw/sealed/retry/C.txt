@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: `except Exception:` replaces `except TimeoutError:`, so non-timeout errors that used to propagate (bad URL, auth failure, programming bugs) are now retried and then swallowed as `return None`. The change also adds a fourth attempt (`range(retries + 1)`) and sleeps after the last failure, with no tests covering any of it.

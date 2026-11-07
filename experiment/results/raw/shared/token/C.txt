@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 5
+REASON: The added line `return given == expected or given == expected.strip()` replaces constant-time `hmac.compare_digest` with `==`, a timing side channel on a secret comparison. Its `expected.strip()` clause also accepts a looser match than exact equality and raises AttributeError if `expected` is bytes-like or None.

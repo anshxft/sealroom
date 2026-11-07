@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: `except Exception:` swallows every error (bad URL, programming bugs, KeyboardInterrupt aside) and the new `return None` hides final failure from callers, who now get `None` instead of an exception. The retry also still runs `sleep(2 ** attempt)` after the last attempt, which wastes time before returning.

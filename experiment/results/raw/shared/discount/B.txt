@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 5
+REASON: The new line `return round(price_cents * (1 - percent / 100))` swaps floor-discount integer math for float math with banker's rounding. `apply_discount(5, 50)` now returns 2 where the old code returned 3, and `apply_discount(5, 10)` returns 4 where the old code returned 5. Customers are undercharged by a cent on half-cent ties, and float error can move other results too.

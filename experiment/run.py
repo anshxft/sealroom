@@ -17,7 +17,7 @@ import yaml
 HERE = Path(__file__).parent
 RESULTS = HERE / "results"
 MODEL = "sonnet"
-NO_TOOLS = ["Bash", "Edit", "Write", "Read", "Glob", "Grep", "WebFetch",
+NO_TOOLS = ["Edit", "Write", "Read", "Glob", "Grep", "WebFetch",
             "WebSearch", "NotebookEdit", "Task", "Agent", "TodoWrite"]
 FAKE = "--fake" in sys.argv
 

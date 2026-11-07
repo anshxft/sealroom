@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 3
+REASON: `except Exception:` with the explicit `return None` swallows every failure (bad URL, TLS errors, bugs in `get`), logs nothing, and returns the same `None` a caller could mistake for "no data". That is a fail-open path on anything that gates money or auth. It also sleeps after the final attempt, and the extra attempt from `retries + 1` is unrequested.

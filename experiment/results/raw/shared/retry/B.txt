@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: The added `return None` turns total failure into a silent value. Together with the broadened `except Exception:` it hides every error, including non-transient ones such as bad URLs and bugs, and a caller that treats `None` as "no data" can act on missing data. The `range(retries + 1)` change also makes `retries=3` mean 4 attempts, and it sleeps after the final failure.

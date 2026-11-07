@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 3
+REASON: `start = (page - 1) * size` silently changes the contract from 0-based to 1-based, so any existing caller passing page 0 now gets `items[-size:0]`, which is empty. Negative or zero pages wrap around from the end of the list because nothing rejects `page < 1`. I couldn't see the callers, so I can't confirm they were updated, and the missing guard is enough to block.

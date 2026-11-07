@@ -1,0 +1,227 @@
+[
+  {
+    "mode": "sealed",
+    "change": "charge",
+    "verdicts": {
+      "A": "BLOCK",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "fractional_overdraft": [
+        "A",
+        "B",
+        "C"
+      ],
+      "negative_amount": []
+    },
+    "distinct": 1,
+    "redundant": 1,
+    "split": false
+  },
+  {
+    "mode": "shared",
+    "change": "charge",
+    "verdicts": {
+      "A": "BLOCK",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "fractional_overdraft": [
+        "A",
+        "B",
+        "C"
+      ],
+      "negative_amount": []
+    },
+    "distinct": 1,
+    "redundant": 1,
+    "split": false
+  },
+  {
+    "mode": "sealed",
+    "change": "page",
+    "verdicts": {
+      "A": "SHIP",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "callers_shift": [
+        "A",
+        "B",
+        "C"
+      ],
+      "page_zero_negative": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "distinct": 2,
+    "redundant": 2,
+    "split": true
+  },
+  {
+    "mode": "shared",
+    "change": "page",
+    "verdicts": {
+      "A": "BLOCK",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "callers_shift": [
+        "A",
+        "C"
+      ],
+      "page_zero_negative": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "distinct": 2,
+    "redundant": 2,
+    "split": false
+  },
+  {
+    "mode": "sealed",
+    "change": "token",
+    "verdicts": {
+      "A": "BLOCK",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "timing_attack": [
+        "A",
+        "B",
+        "C"
+      ],
+      "loosened_match": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "distinct": 2,
+    "redundant": 2,
+    "split": false
+  },
+  {
+    "mode": "shared",
+    "change": "token",
+    "verdicts": {
+      "A": "BLOCK",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "timing_attack": [
+        "A",
+        "B",
+        "C"
+      ],
+      "loosened_match": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "distinct": 2,
+    "redundant": 2,
+    "split": false
+  },
+  {
+    "mode": "sealed",
+    "change": "retry",
+    "verdicts": {
+      "A": "BLOCK",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "broad_except": [
+        "A",
+        "B",
+        "C"
+      ],
+      "silent_none": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "distinct": 2,
+    "redundant": 2,
+    "split": false
+  },
+  {
+    "mode": "shared",
+    "change": "retry",
+    "verdicts": {
+      "A": "BLOCK",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "broad_except": [
+        "A",
+        "B",
+        "C"
+      ],
+      "silent_none": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "distinct": 2,
+    "redundant": 2,
+    "split": false
+  },
+  {
+    "mode": "sealed",
+    "change": "discount",
+    "verdicts": {
+      "A": "BLOCK",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "percent_unbounded": [
+        "B"
+      ],
+      "rounding_change": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "distinct": 2,
+    "redundant": 1,
+    "split": false
+  },
+  {
+    "mode": "shared",
+    "change": "discount",
+    "verdicts": {
+      "A": "BLOCK",
+      "B": "BLOCK",
+      "C": "BLOCK"
+    },
+    "found": {
+      "percent_unbounded": [],
+      "rounding_change": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "distinct": 1,
+    "redundant": 1,
+    "split": false
+  }
+]

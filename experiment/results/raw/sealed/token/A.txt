@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 5
+REASON: The line `return given == expected or given == expected.strip()` replaces the constant-time `hmac.compare_digest` with `==`, which leaks timing information and enables timing attacks on token checks. It also adds a whitespace-stripping match, so a token with leading or trailing whitespace is now accepted. Both changes weaken authentication.

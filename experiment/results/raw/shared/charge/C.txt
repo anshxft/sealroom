@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 5
+REASON: `if amount >= balance + 1:` matches the old `amount > balance` only for integer amounts. With balance=100.00 and amount=100.50 it no longer raises and returns -0.50, so a charge can overdraw by up to one whole unit. The change also adds no tests and no stated reason for it.

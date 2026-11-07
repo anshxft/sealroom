@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: `except Exception:` followed by the new `return None` turns every failure (bad URL, bugs, non-transient errors) into a silent `None` for existing callers who previously got an exception, and `range(retries + 1)` makes `retries=3` mean 4 attempts with a pointless `sleep(2 ** attempt)` after the final failure.

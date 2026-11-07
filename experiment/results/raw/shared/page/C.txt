@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: `start = (page - 1) * size` changes the page contract from 0-based to 1-based in a way existing callers can't detect. A caller that passes page 0 now gets `items[-size:0]`, which is empty, and negative pages wrap around to slices from the end of the list. The diff has no `page < 1` guard, no caller updates, and no tests.

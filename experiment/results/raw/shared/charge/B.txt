@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 5
+REASON: `if amount >= balance + 1:` is equivalent to the old `amount > balance` only for integers. For fractional amounts such as cents, balance=100.00 and amount=100.50 passes the check and returns -0.50, so a charge can overdraw by up to one whole unit.

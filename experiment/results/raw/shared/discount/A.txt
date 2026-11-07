@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: The new line `return round(price_cents * (1 - percent / 100))` replaces exact integer math with float math and banker's rounding. `apply_discount(5, 50)` now returns 2 where the old code returned 3. Float error in `1 - percent / 100` can also move other results by a cent, and nothing in the change explains or tests the new rounding.

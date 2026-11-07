@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: `start = (page - 1) * size` changes the function from 0-indexed to 1-indexed without a signature change. Every existing caller passing `page=0` now gets `items[-size:0]`, which is an empty list, and every other page shifts by one, with no error raised. The diff includes no tests, no caller updates and no guard for `page < 1`.

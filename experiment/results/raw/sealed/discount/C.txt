@@ -1,0 +1,3 @@
+VERDICT: BLOCK
+CONFIDENCE: 4
+REASON: The new line `return round(price_cents * (1 - percent / 100))` changes money results for existing callers. The old integer math rounded the discounted price up, so `apply_discount(5, 10)` gave 5 and `apply_discount(5, 50)` gave 3. The new float math uses banker's rounding and gives 4 and 2, and it can also drift on large amounts. The diff has no tests and no stated reason for the change.
